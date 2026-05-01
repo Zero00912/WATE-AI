@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<title>WATE-AI V3.7 参数教学手册</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+    background: linear-gradient(135deg, #0d0b1a 0%, #1a1035 50%, #0d0b1a 100%);
+    color: #e0daf0;
+    line-height: 1.8;
+    min-height: 100vh;
+    -webkit-text-size-adjust: 100%;
+  }
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 50px 16px 40px;
+    border-bottom: 2px solid rgba(160, 80, 255, 0.3);
+    margin-bottom: 50px;
+  }
+  .header h1 {
+    font-size: 36px;
+    background: linear-gradient(135deg, #c060ff 0%, #60a0ff 50%, #c060ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+    letter-spacing: 2px;
+  }
+  .header .subtitle {
+    color: #8070a0;
+    font-size: 15px;
+  }
+  .header .version-badge {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 6px 20px;
+    border-radius: 20px;
+    background: rgba(160, 80, 255, 0.15);
+    border: 1px solid rgba(160, 80, 255, 0.4);
+    color: #c080ff;
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+
+  /* TOC */
+  .toc {
+    background: rgba(30, 20, 60, 0.6);
+    border: 1px solid rgba(160, 80, 255, 0.2);
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-bottom: 50px;
+  }
+  .toc h2 {
+    font-size: 18px;
+    color: #c080ff;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(160, 80, 255, 0.15);
+  }
+  .toc ol { padding-left: 24px; }
+  .toc li { margin: 6px 0; }
+  .toc a {
+    color: #a090d0;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .toc a:hover { color: #c060ff; text-decoration: underline; }
+
+  /* Sections */
+  .section { margin-bottom: 48px; }
+  .section-title {
+    font-size: 24px;
+    color: #c080ff;
+    padding: 12px 0;
+    margin-bottom: 20px;
+    border-bottom: 2px solid rgba(160, 80, 255, 0.25);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .section-title .icon { font-size: 22px; }
+  .section-desc {
+    color: #a098c0;
+    font-size: 14px;
+    margin-bottom: 24px;
+    padding: 12px 16px;
+    background: rgba(80, 40, 160, 0.1);
+    border-left: 3px solid rgba(160, 80, 255, 0.4);
+    border-radius: 0 8px 8px 0;
+  }
+
+  /* Param Table — desktop */
+  .param-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 24px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+  .param-table thead th {
+    background: linear-gradient(135deg, rgba(60, 30, 120, 0.9), rgba(40, 20, 80, 0.9));
+    color: #d0c0f0;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: left;
+    letter-spacing: 0.5px;
+  }
+  .param-table tbody tr {
+    background: rgba(20, 12, 40, 0.5);
+    transition: background 0.2s;
+  }
+  .param-table tbody tr:nth-child(even) { background: rgba(30, 18, 55, 0.5); }
+  .param-table tbody tr:hover { background: rgba(80, 40, 160, 0.15); }
+  .param-table td {
+    padding: 10px 16px;
+    font-size: 13.5px;
+    border-bottom: 1px solid rgba(100, 60, 180, 0.1);
+    vertical-align: top;
+  }
+  .param-table td:first-child {
+    font-weight: 600;
+    color: #b090e0;
+    white-space: nowrap;
+  }
+  .param-table td:nth-child(2) {
+    color: #8078a8;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 12.5px;
+    white-space: nowrap;
+  }
+  .param-table td:nth-child(3) {
+    color: #70a8d0;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 12.5px;
+    white-space: nowrap;
+  }
+
+  /* Tags */
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-right: 4px;
+  }
+  .tag-important { background: rgba(255, 80, 80, 0.2); color: #ff8888; border: 1px solid rgba(255, 80, 80, 0.3); }
+  .tag-recommend { background: rgba(80, 200, 120, 0.15); color: #80d090; border: 1px solid rgba(80, 200, 120, 0.3); }
+  .tag-advanced { background: rgba(255, 180, 50, 0.15); color: #f0c050; border: 1px solid rgba(255, 180, 50, 0.3); }
+  .tag-bplus { background: rgba(80, 140, 255, 0.15); color: #80b0ff; border: 1px solid rgba(80, 140, 255, 0.3); }
+  .tag-net { background: rgba(0, 200, 200, 0.15); color: #60d0d0; border: 1px solid rgba(0, 200, 200, 0.3); }
+  .tag-new { background: rgba(255, 60, 180, 0.2); color: #ff80c0; border: 1px solid rgba(255, 60, 180, 0.4); }
+
+  /* Tip boxes */
+  .tip-box {
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin: 16px 0;
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+  .tip-info {
+    background: rgba(60, 120, 220, 0.1);
+    border: 1px solid rgba(60, 120, 220, 0.3);
+    color: #90b8e0;
+  }
+  .tip-warn {
+    background: rgba(220, 160, 40, 0.1);
+    border: 1px solid rgba(220, 160, 40, 0.3);
+    color: #e0c070;
+  }
+  .tip-success {
+    background: rgba(60, 180, 100, 0.1);
+    border: 1px solid rgba(60, 180, 100, 0.3);
+    color: #80d0a0;
+  }
+  .tip-box strong { display: block; margin-bottom: 4px; }
+
+  /* Sub-section */
+  .subsection { margin: 20px 0; }
+  .subsection h3 {
+    font-size: 17px;
+    color: #b098e0;
+    margin-bottom: 12px;
+    padding-left: 12px;
+    border-left: 3px solid #8060c0;
+  }
+
+  /* Changelog */
+  .changelog {
+    background: rgba(30, 20, 60, 0.5);
+    border: 1px solid rgba(160, 80, 255, 0.2);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 50px;
+  }
+  .changelog h2 {
+    font-size: 18px;
+    color: #c080ff;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(160, 80, 255, 0.15);
+  }
+  .changelog ul { padding-left: 20px; }
+  .changelog li { margin: 6px 0; font-size: 14px; color: #b0a8d0; }
+  .changelog li strong { color: #d0b8f0; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 30px 0;
+    border-top: 1px solid rgba(160, 80, 255, 0.15);
+    color: #605080;
+    font-size: 13px;
+    margin-top: 40px;
+  }
+
+  /* ======= Mobile responsive ======= */
+  @media (max-width: 768px) {
+    .container { padding: 16px 10px 40px; }
+    .header { padding: 30px 10px 24px; margin-bottom: 30px; }
+    .header h1 { font-size: 22px; letter-spacing: 1px; }
+    .header .subtitle { font-size: 13px; }
+    .header .version-badge { font-size: 12px; padding: 5px 14px; }
+    .toc { padding: 16px 14px; margin-bottom: 30px; }
+    .toc h2 { font-size: 16px; }
+    .toc ol { padding-left: 18px; }
+    .toc li { font-size: 14px; }
+    .changelog { padding: 14px 12px; margin-bottom: 30px; }
+    .section { margin-bottom: 32px; }
+    .section-title { font-size: 18px; gap: 6px; }
+    .section-title .icon { font-size: 18px; }
+    .section-desc { font-size: 13px; padding: 10px 12px; }
+    .subsection h3 { font-size: 15px; }
+
+    /* Card layout for tables on mobile */
+    .param-table { box-shadow: none; border-radius: 8px; }
+    .param-table thead { display: none; }
+    .param-table tbody tr {
+      display: block;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(100, 60, 180, 0.2);
+      padding: 12px;
+      background: rgba(20, 12, 40, 0.6);
+    }
+    .param-table tbody tr:nth-child(even) { background: rgba(25, 15, 50, 0.6); }
+    .param-table td {
+      display: block;
+      padding: 4px 0;
+      border-bottom: none;
+      font-size: 13px;
+      white-space: normal !important;
+    }
+    .param-table td:first-child {
+      font-size: 14px;
+      margin-bottom: 4px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(100, 60, 180, 0.15);
+    }
+    .param-table td:nth-child(2)::before { content: "范围："; color: #7068a0; font-size: 12px; }
+    .param-table td:nth-child(3)::before { content: "默认："; color: #5898b8; font-size: 12px; }
+    .param-table td:nth-child(2),
+    .param-table td:nth-child(3) { font-size: 12px; }
+    .param-table td:last-child { color: #c0b8d8; margin-top: 4px; line-height: 1.6; }
+    /* 2-column tables (hotkey etc) */
+    .param-table.two-col td:nth-child(2)::before { content: ""; }
+
+    .tip-box { padding: 12px 14px; font-size: 13px; }
+    .tag { font-size: 10px; padding: 2px 6px; }
+  }
+
+  @media (max-width: 400px) {
+    .container { padding: 10px 6px 30px; }
+    .header h1 { font-size: 19px; }
+    .section-title { font-size: 16px; }
+  }
+
+  /* Print friendly */
+  @media print {
+    body { background: #fff; color: #222; }
+    .header h1 { -webkit-text-fill-color: #333; color: #333; }
+    .section-title { color: #333; border-color: #999; }
+    .param-table thead th { background: #eee; color: #333; }
+    .param-table tbody tr { background: #fff; }
+    .param-table td { color: #333; border-color: #ddd; }
+    .tag { border-color: #999; color: #555; }
+    .toc { border-color: #ccc; background: #f9f9f9; }
+    .tip-box { background: #f5f5f5; border-color: #ccc; color: #444; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ============ HEADER ============ -->
+<div class="header">
+  <h1>WATE-AI 参数教学手册</h1>
+  <div class="subtitle">全面掌握每一个参数的含义与调节技巧</div>
+  <div class="version-badge">适用版本：V3.7</div>
+</div>
+
+<!-- ============ TOC ============ -->
+<div class="toc">
+  <h2>目 录</h2>
+  <ol>
+    <li><a href="#sec-basic">基础系统设置</a></li>
+    <li><a href="#sec-capture">截图模式与采集配置</a></li>
+    <li><a href="#sec-ai">AI 引擎参数</a></li>
+    <li><a href="#sec-protocol">硬件驱动 / 协议配置</a></li>
+    <li><a href="#sec-aim">瞄准参数（全局）</a></li>
+    <li><a href="#sec-pid">PID 瞄准算法（按键独立）</a></li>
+    <li><a href="#sec-fov">FOV / 检测参数（按键独立）</a></li>
+    <li><a href="#sec-trigger">扳机系统（按键独立）</a></li>
+    <li><a href="#sec-ylock">Y 轴锁定（按键独立）</a></li>
+    <li><a href="#sec-flashdodge">背闪闪避（FlashDodge）<span class="tag tag-new">V3.7</span></a></li>
+    <li><a href="#sec-curve">曲线轨迹系统（全局）</a></li>
+    <li><a href="#sec-shield">屏蔽参数</a></li>
+    <li><a href="#sec-crosshair">准星找色</a></li>
+    <li><a href="#sec-rcs">RCS 压枪系统</a></li>
+    <li><a href="#sec-class">类别筛选与排序</a></li>
+    <li><a href="#sec-hotkey">快捷键</a></li>
+    <li><a href="#sec-faq">常见问题与调参建议</a></li>
+  </ol>
+</div>
+
+<!-- ============ 1. 基础系统设置 ============ -->
+<div class="section" id="sec-basic">
+  <div class="section-title"><span class="icon">⚙️</span> 一、基础系统设置</div>
+  <div class="section-desc">控制程序的运行模式、帧率、窗口等全局行为。</div>
+
+  <table class="param-table">
+    <thead><tr><th>参数名称</th><th>范围 / 类型</th><th>默认值</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>推理帧率上限 (AimFpsLimit)</td><td>0 ~ 999</td><td>0 (全速)</td>
+        <td><span class="tag tag-new">V3.7</span> 推理线程帧率上限。<strong>0 = 全速</strong>，节拍随截图管线（不超截图上限）；&gt;0 时按设定值限频。引擎内部硬上限 1000 FPS。<span class="tag tag-recommend">默认 0 即可</span></td></tr>
+      <tr><td>异步模式 (EnableAsync)</td><td>开关</td><td>开启</td>
+        <td>截图与推理异步执行。异步模式下推理帧率可超过截图帧率（复用最新帧），由 GPU 算力决定。<span class="tag tag-recommend">强烈推荐开启</span></td></tr>
+      <tr><td>推理窗口 (ShowInferenceWindow)</td><td>开关</td><td>关闭</td><td>显示实时推理画面（调试用），会增加额外 GPU 占用。</td></tr>
+      <tr><td>调试模式 (DebugMode)</td><td>开关</td><td>关闭</td><td>输出详细性能日志（FPS / Loop / Infer / Cap 耗时），仅开发调试使用。</td></tr>
+      <tr><td>反截图 (EnableAntiScreenshot)</td><td>开关</td><td>开启</td><td>防止推理窗口与控制台被游戏内截图/录屏软件捕获。</td></tr>
+      <tr><td>一键安全模式</td><td>按钮</td><td>—</td><td><span class="tag tag-new">V3.7</span> 网页面板按钮：清日志 + 关闭调试模式 + 隐藏日志窗口。</td></tr>
+    </tbody>
+  </table>
+
+  <div class="tip-box tip-info">
+    <strong>V3.7 帧率架构说明</strong>
+    网页面板状态栏中的 <code>FPS</code> 是推理帧率（AimbotThread 每秒实际处理的帧数）。<br>
+    采集卡模式下额外显示 <code>CCap</code>（采集卡实际帧率）；WATESender 模式下显示 <code>NRcv</code>（网络接收实际帧率）。<br>
+    推理 FPS 默认全速：通常采集 240Hz + 全速推理 → ~500–900fps（取决于显卡）。更高推理频率 = 更强锁定 + 更平滑移动。
+  </div>
+</div>
+
+<!-- ============ 2. 截图模式 ============ -->
+<div class="section" id="sec-capture">
+  <div class="section-title"><span class="icon">🖥️</span> 二、截图模式与采集配置</div>
+  <div class="section-desc">选择如何获取游戏画面。不同模式适用于不同场景。</div>
+
+  <table class="param-table">
+    <thead><tr><th>参数名称</th><th>范围 / 类型</th><th>默认值</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>截图模式 (CaptureMode)</td><td>1 / 2 / 4 / 5</td><td>2 (DXGI)</td><td>
+        <span class="tag tag-new">V3.7 已精简</span><br>
+        <strong>1 = GDI (CPU)</strong>：兼容性好但受显示器刷新率限制，每帧独立私有 DC<br>
+        <strong>2 = DXGI (GPU)</strong>：高性能，推荐首选；HDR / scRGB 自动 sRGB 校正<br>
+        <strong>4 = 采集卡</strong>：USB 采集卡（DSHOW，YUY2 / NV12 / MJPEG 直通）<br>
+        <strong>5 = WATESender</strong>：QUIC（msquic）+ WATE/1 二进制帧；统一替代旧 5/6/7 三种网络模式
+      </td></tr>
+    </tbody>
+  </table>
+
+  <div class="subsection">
+    <h3>采集卡配置（模式 4）</h3>
+    <table class="param-table">
+      <thead><tr><th>参数名称</th><th>范围</th><th>默认值</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>设备索引</td><td>0, 1, 2...</td><td>0</td><td>采集卡设备编号，可通过「扫描设备」获取。</td></tr>
+        <tr><td>采集宽度</td><td>640 ~ 3840</td><td>1920</td><td>采集分辨率宽度。</td></tr>
+        <tr><td>采集高度</td><td>480 ~ 2160</td><td>1080</td><td>采集分辨率高度。</td></tr>
+        <tr><td>编码格式</td><td>YUY2 / NV12 / MJPEG</td><td>MJPEG</td><td><span class="tag tag-new">V3.7</span> YUY2 / NV12 为无压缩直通；MJPEG 为大多数 USB 采集卡协商 120/144/240fps 必选。</td></tr>
+        <tr><td>采集帧率</td><td>30 ~ 240</td><td>60</td><td>采集卡输出帧率。截图线程以此为上限，与 AimFpsLimit 解耦。高刷采集卡建议 144/240。</td></tr>
+        <tr><td>裁切尺寸</td><td>0 ~ 1920</td><td>0</td><td>0 = 使用 AI_InputSize 自动裁切中心区域。</td></tr>
+        <tr><td>接受驱动实际分辨率</td><td>开关</td><td>关闭</td><td>勾选后不强制 set，使用采集卡驱动协商出的分辨率。</td></tr>
+      </tbody>
+    </table>
+
+    <div class="tip-box tip-warn">
+      <strong>V3.7 采集卡高帧率注意事项</strong>
+      1. 确保采集卡硬件支持目标帧率（HDMI 2.0 最高 4K@60 / 1080p@240）<br>
+      2. MJPEG 编码协商帧率，大多数 USB 采集卡在 MJPEG 下可支持 120/144/240fps<br>
+      3. 「采集帧率」高于采集卡硬件能力时会自动降级；想确认实际值看状态栏 <code>CCap</code><br>
+      4. 推理 FPS 默认全速会高于采集帧率，多出的周期复用最新帧（异步模式）
+    </div>
+  </div>
+
+  <div class="subsection">
+    <h3>WATESender 网络接收（模式 5）<span class="tag tag-new">V3.7 重构</span></h3>
+    <table class="param-table">
+      <thead><tr><th>参数名称</th><th>范围</th><th>默认值</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>WATESender IP</td><td>IP 地址</td><td>192.168.1.100</td><td>WATESender HTTPS 控制端 IP。</td></tr>
+        <tr><td>HTTPS 端口</td><td>1 ~ 65535</td><td>—</td><td>WATESender 面板端口；首次接入会自动从 <code>/api/ca.pem</code> 拉取 CA 并写入用户 Root。</td></tr>
+        <tr><td>QUIC 端口</td><td>1 ~ 65535</td><td>—</td><td>实际推流走 QUIC（msquic）；负载帧格式为 WATE/1 二进制（JPEG 或 H.264 Annex B）。</td></tr>
+        <tr><td>裁切尺寸</td><td>0 ~ 1920</td><td>0</td><td>0 = 使用 AI_InputSize。</td></tr>
+      </tbody>
+    </table>
+
+    <div class="tip-box tip-info">
+      <strong>V3.7 网络模式重大重构</strong>
+      旧 5（加密 UDP / AES-256 CTR）、6（普通 UDP）、7（TCP 推流）<strong>三种模式已合并删除</strong>，统一改由 WATESender 上 QUIC + WATE/1 帧承载，无 WebSocket、无应用层 AES，TLS 由 QUIC 内置；解码模块已新增 H.264 NV12→BGR 零拷贝路径。
+    </div>
+  </div>
+</div>
+
+<!-- ============ 3. AI 引擎 ============ -->
+<div class="section" id="sec-ai">
+  <div class="section-title"><span class="icon">🧠</span> 三、AI 引擎参数</div>
+  <div class="section-desc">控制 AI 模型的输入尺寸、推理引擎和精度模式。加载模型后会自动识别。</div>
+
+  <table class="param-table">
+    <thead><tr><th>参数名称</th><th>范围 / 类型</th><th>默认值</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>AI 输入尺寸 (AI_InputSize)</td><td>128 ~ 1280</td><td>416</td><td>模型输入分辨率。越大检测越精准但推理越慢。<strong>加载模型后自动识别</strong>。</td></tr>
+      <tr><td>类别总数 (AI_TotalClasses)</td><td>1 ~ 64</td><td>8</td><td>模型输出的目标类别数量。<span class="tag tag-new">V3.7</span> YOLOv5/v8 形状自动消歧，加载模型后自动识别。</td></tr>
+      <tr><td>推理后端 (AI_UseCUDA)</td><td>0 / 1</td><td>0 (DirectML)</td><td><span class="tag tag-new">V3.7</span> 网页面板下拉框：<br><strong>0 = DirectML</strong>（N卡 / A卡 / Intel 通用）<br><strong>1 = TensorRT for RTX 1.4</strong><span class="tag tag-important">仅 N 卡 RTX 系列</span></td></tr>
+      <tr><td>FP16 推理 (AI_UseFP16)</td><td>开关</td><td>关闭</td><td><span class="tag tag-new">V3.7</span> <strong>仅 TensorRT 模式生效</strong>；DirectML 与该开关解耦。FP16 速度翻倍但精度略降。</td></tr>
+    </tbody>
+  </table>
+
+  <div class="tip-box tip-info">
+    <strong>提示</strong>
+    选择模型文件后系统会自动识别并设置 AI_InputSize / AI_TotalClasses / 模型版本（YOLOv5 或 YOLOv8），一般无需手动修改。TRT 引擎首次构建需要等待 1~5 分钟（构建进度可在面板查看），构建后会执行 5 帧 warmup 稳定 GPU Boost Clock。
+  </div>
+
+  <div class="tip-box tip-warn">
+    <strong>V3.7 移除项</strong>
+    <code>AI_UseINT8</code> 整数量化已下线（保留 JSON 字段以兼容旧配置但永远写 false），不再出现在网页面板。
+  </div>
+</div>
+
+<!-- ============ 4. 硬件驱动 ============ -->
+<div class="section" id="sec-protocol">
+  <div class="section-title"><span class="icon">🔌</span> 四、硬件驱动 / 协议配置</div>
+  <div class="section-desc">配置鼠标移动的传输方式。支持 NET（网络UDP协议）和 B+/MAKCU（串口协议）两种。</div>
+
+  <table class="param-table">
+    <thead><tr><th>参数名称</th><th>范围 / 类型</th><th>默认值</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>协议类型 (ProtocolType)</td><td>1 / 2</td><td>2 (NET)</td><td>
+        <span class="tag tag-new">V3.7 已精简</span>，KM04 已移除。<br>
+        <span class="tag tag-net">NET (2)</span> KMBOX NET，UDP 协议<br>
+        <span class="tag tag-bplus">MAKCU (1)</span> KMBOX B+ / MAKCU，USB 串口协议
+      </td></tr>
+      <tr><td>连接模式</td><td>0 / 1</td><td>0 (插盒子)</td><td><span class="tag tag-new">V3.7</span><br><strong>0 = 插盒子</strong>：鼠标按键走协议（瞄准/扳机生效）<br><strong>1 = 插主机</strong>：鼠标按键走系统（仅做鼠标移动） </td></tr>
+    </tbody>
+  </table>
+
+  <div class="subsection">
+    <h3><span class="tag tag-net">NET</span> KMBOX NET 协议配置</h3>
+    <table class="param-table">
+      <thead><tr><th>参数名称</th><th>范围</th><th>默认值</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>服务器 IP</td><td>IP 地址</td><td>192.168.1.100</td><td>NET 设备的 IP 地址。</td></tr>
+        <tr><td>端口 (Port)</td><td>1 ~ 65535</td><td>8888</td><td>NET 设备通信端口。</td></tr>
+        <tr><td>UUID</td><td>字符串</td><td>空</td><td>设备唯一标识。支持纯数字如 "00000000"。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <h3><span class="tag tag-bplus">MAKCU</span> KMBOX B+ / MAKCU 串口协议配置</h3>
+    <table class="param-table">
+      <thead><tr><th>参数名称</th><th>范围</th><th>默认值</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>串口号 (ComPort)</td><td>COM1 ~ COMx</td><td>COM5</td><td>MAKCU 设备的 COM 端口，可通过「扫描设备」自动检测（支持 CH343 等 VID:PID）。</td></tr>
+        <tr><td>波特率 (Baud)</td><td>115200 ~ 4000000</td><td>115200</td><td><span class="tag tag-new">V3.7</span> 串口通信速率，最高 4 Mbps。<span class="tag tag-recommend">推荐 115200 起，按设备升档</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tip-box tip-info">
+    <strong>连接流程</strong>
+    1. 选择协议类型 → 2. 填写连接参数（IP / COM口）→ 3. 点击「连接设备」/「扫描设备」→ 4. 状态栏显示「已连接」即成功。
+  </div>
+</div>
+
+<!-- ============ 5. 瞄准参数（全局） ============ -->
+<div class="section" id="sec-aim">
+  <div class="section-title"><span class="icon">🎯</span> 五、瞄准参数（全局）</div>
+  <div class="section-desc">全局生效的瞄准相关参数，影响所有配置组和按键绑定。</div>
+
+  <table class="param-table">
+    <thead><tr><th>参数名称</th><th>范围</th><th>默认值</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>全局移动频率 (MoveHz)</td><td>0 ~ 1000 Hz</td><td><span class="tag tag-new">V3.7</span> 200</td><td>全局鼠标移动发送频率。0 = 使用协议内置频率；&gt;0 = 覆盖协议特定频率。<span class="tag tag-recommend">推荐 200~400</span></td></tr>
+      <tr><td>瞄准附加延迟 (AimExtraDelayMs)</td><td>0 ~ 10 ms</td><td>0</td><td>每次移动指令后额外等待的毫秒数。0 = 无延迟。</td></tr>
+      <tr><td>单次最大移动 (MaxMovePerStep)</td><td>1 ~ 200 px</td><td>50</td><td>每次发送的最大移动像素数。防止单次移动过大导致抖动。<span class="tag tag-important">关键参数</span></td></tr>
+      <tr><td>持续锁定 (Aim_Continuous)</td><td>开关</td><td>关闭</td><td>开启后，松开按键也继续瞄准（直到目标丢失）。</td></tr>
+    </tbody>
+  </table>
+
+  <div class="tip-box tip-info">
+    <strong>V3.7 抖动抑制说明</strong>
+    旧版 B+ 专属的「反抖动」「额外平滑」两个开关已下线，其能力被合并到 PID 输入侧 Smooth、Smooth_Deadzone、近距 closeBoost smoothstep 过渡和 PID 输出 EMA 中，无需手动开启。<br>
+    若仍出现抖动，请按 PID 节末尾「调参口诀」依次提高 D / 提高 Smooth / 降低 P 即可。
+  </div>
+</div>
+
+<!-- ============ 6. PID 瞄准算法 ============ -->
+<div class="section" id="sec-pid">
+  <div class="section-title"><span class="icon">📐</span> 六、PID 瞄准算法（按键独立）</div>
+  <div class="section-desc">PID 控制器是瞄准系统的核心算法。每个按键绑定有独立的 PID 参数。合理调节可实现丝滑拉枪 + 死区硬锁。</div>
+
+  <div class="subsection">
+    <h3>X 轴参数</h3>
+    <table class="param-table">
+      <thead><tr><th>参数名称</th><th>范围</th><th>默认值</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>P-X (比例增益)</td><td>0.00 ~ 1.00</td><td>0.120</td><td>比例系数。越大拉枪越猛，过大会震荡/超调。<span class="tag tag-important">核心参数</span></td></tr>
+        <tr><td>I-X (积分增益)</td><td>0.00 ~ 2.00</td><td>0.300</td><td>消除稳态误差，使准心精确到达目标。过大导致积分饱和。</td></tr>
+        <tr><td>D-X (输出阻尼)</td><td>0.00 ~ 0.10</td><td>0.020</td><td>值越大，输出变化越被抑制 → 抗振荡。0=无阻尼，0.02=中等，0.05+=强阻尼。<span class="tag tag-recommend">抖动时增大</span></td></tr>
+        <tr><td>限幅 X (LimitX)</td><td>0.00 ~ 1.00</td><td>0.620</td><td>X 轴积分限幅，防止积分项过大。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <h3>Y 轴参数</h3>
+    <table class="param-table">
+      <thead><tr><th>参数名称</th><th>范围</th><th>默认值</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>P-Y (比例增益)</td><td>0.00 ~ 1.00</td><td>0.100</td><td>通常略小于 P-X，垂直方向需要更稳。</td></tr>
+        <tr><td>I-Y (积分增益)</td><td>0.00 ~ 2.00</td><td>0.300</td><td>Y 轴积分系数。</td></tr>
+        <tr><td>D-Y (输出阻尼)</td><td>0.00 ~ 0.10</td><td>0.020</td><td>Y 轴输出阻尼系数。</td></tr>
+        <tr><td>限幅 Y (LimitY)</td><td>0.00 ~ 1.00</td><td>0.520</td><td>Y 轴积分限幅。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <h3>平滑与磁吸</h3>
+    <table class="param-table">
+      <thead><tr><th>参数名称</th><th>范围</th><th>默认值</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>平滑 (Smooth)</td><td>0.10 ~ 1.00</td><td>0.10</td><td><strong>0.10 = 无平滑（最硬，响应最快）；1.00 = 最柔（丝滑但延迟高）</strong>。支持两位小数微调。<span class="tag tag-important">核心参数</span></td></tr>
+        <tr><td>移动死区 (Smooth_Deadzone)</td><td>0.0 ~ 50.0 px</td><td>1.5</td><td>误差 ≤ 该值时准心完全静止，禁用曲线/平滑/移动输出。<span class="tag tag-important">防瞄到人后画圈</span></td></tr>
+        <tr><td>磁吸增益 (AimMagnet)</td><td>0.0 ~ 10.0</td><td>2.5</td><td>死区内的锁定力度。1.0=无增益；越大准心锁定越"死"。<span class="tag tag-recommend">推荐 2.0~4.0</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <h3>速度前馈（FollowGain）<span class="tag tag-new">V3.7 升级</span></h3>
+    <div class="section-desc">v2.0 引入 / v3.7 调优：旧版作为远距 P 增益（[1,3]），新版语义为目标速度前馈 [0,1]。</div>
+    <table class="param-table">
+      <thead><tr><th>参数名称</th><th>范围</th><th>默认值</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>速度前馈 (FollowGain)</td><td>0.00 ~ 1.00</td><td>0.00</td><td>公式：<code>desired += FollowGain × 目标帧速度</code>。0 = 关闭；1 = 理论零滞后跟枪。配置文件字段名沿用旧 <code>FollowGain</code>。<span class="tag tag-recommend">想跟快速横移敌人时启用 0.3~0.6</span></td></tr>
+      </tbody>
+    </table>
+    <div class="tip-box tip-warn">
+      <strong>迁移提示</strong>
+      旧版 V2.9.5 配置中 FollowGain 数值若 ∈ [1, 3]，加载时会被自动 clamp 到 [0, 1]；建议手工重新调整该值。
+    </div>
+  </div>
+
+  <div class="tip-box tip-success">
+    <strong>PID 调参口诀</strong>
+    <strong>拉枪太慢？</strong> → 提高 P 值 &amp; 降低 Smooth<br>
+    <strong>拉枪震荡/超调？</strong> → 降低 P 值 &amp; 提高 D 值<br>
+    <strong>跟枪不紧？</strong> → 提高 AimMagnet &amp; 提高 I 值<br>
+    <strong>跟横移目标滞后？</strong> → 提高 FollowGain（0.3~0.6）<br>
+    <strong>准心抖动？</strong> → 提高 Smooth &amp; 提高 D 值<br>
+    <strong>默认参数已经过反复优化，建议新手先使用默认值体验。</strong>
+  </div>
+</div>
+
+<!-- ============ 7. FOV 检测参数 ============ -->
+<div class="section" id="sec-fov">
+  <div class="section-title"><span class="icon">👁️</span> 七、FOV / 检测参数（按键独立）</div>
+  <div class="section-desc">控制 AI 检测的敏感度和瞄准区域。每个按键绑定可独立设置。</div>
+
+  <table class="param-table">
+    <thead><tr><th>参数名称</th><th>范围</th><th>默认值</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>FOV 半径 (FovRadius)</td><td>10 ~ 500 px</td><td>100</td><td>瞄准视野半径（像素）。只有 FOV 圆内的目标才会被瞄准。<span class="tag tag-important">核心参数</span></td></tr>
+      <tr><td>置信阈值 (ConfThresh)</td><td>0.10 ~ 1.00</td><td>0.60</td><td>AI 检测置信度门槛。越高越精准但可能漏检。</td></tr>
+      <tr><td>IOU 阈值 (IouThresh)</td><td>0.10 ~ 1.00</td><td>0.50</td><td>NMS 去重阈值。值越低去重越激进。</td></tr>
+      <tr><td>瞄准高度 低 (Aim_HeightMin)</td><td>0.00 ~ 1.00</td><td>0.20</td><td>瞄准点在框内的相对高度。0=顶部，1=底部。0.20=头部。</td></tr>
+      <tr><td>瞄准高度 高 (Aim_HeightMax)</td><td>0.00 ~ 1.00</td><td>0.20</td><td>与 HeightMin 相同时固定位置；不同时为随机范围。</td></tr>
+      <tr><td>水平偏移 (Aim_OffsetX)</td><td>-100 ~ 100 px</td><td>0</td><td>瞄准点水平偏移。负数偏左，正数偏右。</td></tr>
+    </tbody>
+  </table>
+
+  <div class="tip-box tip-info">
+    <strong>HeightMin/Max 示例</strong>
+    0.20 / 0.20 → 固定瞄头部 20% 位置<br>
+    0.15 / 0.30 → 在头部 15%~30% 范围内随机瞄准（更自然）
+  </div>
+</div>
+
+<!-- ============ 8. 扳机系统 ============ -->
+<div class="section" id="sec-trigger">
+  <div class="section-title"><span class="icon">🔫</span> 八、扳机系统（按键独立）</div>
+  <div class="section-desc">自动射击系统。当准心进入目标区域时自动触发点击。</div>
+
+  <div class="subsection">
+    <h3>扳机开关</h3>
+    <table class="param-table">
+      <thead><tr><th>参数名称</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>扳机开关 (Trigger_Enable)</td><td>开关</td><td>关闭</td><td>启用自动扳机功能。</td></tr>
+        <tr><td>持续扳机 (Trigger_Always)</td><td>开关</td><td>关闭</td><td>目标在范围内就持续射击，不受冷却限制。</td></tr>
+        <tr><td>磁性扳机 (Trigger_MagneticAim)</td><td>开关</td><td><span class="tag tag-new">V3.7</span> 开启</td><td>勾选 = 吸附 + 扳机；不勾选 = <strong>纯扳机（无鼠标移动）</strong>，准心进入触发框就开火。</td></tr>
+        <tr><td>伪静默扳机 (Trigger_PseudoSilent)</td><td>开关</td><td>关闭</td><td><span class="tag tag-new">V3.7</span> 暴力模式：仅开枪帧瞬吸，短暂保留后立刻回位，外观近似无后坐力静默瞄准。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <h3>扳机时序</h3>
+    <table class="param-table">
+      <thead><tr><th>参数名称</th><th>范围</th><th>默认值</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>前摇延迟 (Trig_PreDelay)</td><td>0 ~ 500 ms</td><td>0</td><td>检测到目标后等待多久才射击。模拟人类反应。</td></tr>
+        <tr><td>持续时间 (Trig_Duration)</td><td>0 ~ 500 ms</td><td>0</td><td>按下鼠标的持续毫秒数。0=单击。</td></tr>
+        <tr><td>冷却时间 (Trig_Cooldown)</td><td>0 ~ 2000 ms</td><td>0</td><td>两次射击之间的最短间隔。</td></tr>
+        <tr><td>随机延迟 (Trig_RandDelay)</td><td>0 ~ 200 ms</td><td>0</td><td>在前摇基础上叠加随机毫秒数。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <h3>扳机触发区域</h3>
+    <table class="param-table">
+      <thead><tr><th>参数名称</th><th>范围</th><th>默认值</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>触发范围 X (Trig_RangeX)</td><td>0.00 ~ 1.00</td><td>0.82</td><td>水平触发区域占检测框的比例。</td></tr>
+        <tr><td>触发范围 Y (Trig_RangeY)</td><td>0.00 ~ 1.00</td><td>0.97</td><td>垂直触发区域占检测框的比例。</td></tr>
+        <tr><td>触发偏移 X (Trig_OffsetX)</td><td>-0.50 ~ 0.50</td><td>0.00</td><td>触发区域的水平偏移。</td></tr>
+        <tr><td>触发偏移 Y (Trig_OffsetY)</td><td>-0.50 ~ 0.50</td><td>0.02</td><td>触发区域的垂直偏移。</td></tr>
+        <tr><td>触发阈值 X (Trig_Threshold)</td><td>0 ~ 50 px</td><td>8</td><td>水平方向额外扩展的像素容差。</td></tr>
+        <tr><td>触发阈值 Y (Trig_ThresholdY)</td><td>0 ~ 50 px</td><td>8</td><td>垂直方向额外扩展的像素容差。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tip-box tip-warn">
+    <strong>扳机使用注意</strong>
+    扳机需要先按住瞄准键（如右键）时才生效。准心进入触发区域才会自动射击。网页面板有实时的触发区域可视化预览。
+  </div>
+</div>
+
+<!-- ============ 9. Y轴锁定 ============ -->
+<div class="section" id="sec-ylock">
+  <div class="section-title"><span class="icon">🔒</span> 九、Y 轴锁定（按键独立）</div>
+  <div class="section-desc">在特定条件下锁定 Y 轴移动，只进行水平瞄准。</div>
+
+  <table class="param-table">
+    <thead><tr><th>参数名称</th><th>范围 / 类型</th><th>默认值</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>Y 轴锁定 (Y_Lock_Enable)</td><td>开关</td><td>关闭</td><td>短按瞄准键锁定 Y 轴（只左右移动），长按后解锁。</td></tr>
+      <tr><td>Y 锁阈值 (Y_Lock_Thresh)</td><td>0 ~ 2000 ms</td><td>200</td><td>按住超过此毫秒数后解锁 Y 轴。</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============ 10. FlashDodge 背闪闪避 ============ -->
+<div class="section" id="sec-flashdodge">
+  <div class="section-title"><span class="icon">⚡</span> 十、背闪闪避（FlashDodge）<span class="tag tag-new">V3.7 新增</span></div>
+  <div class="section-desc">检测到指定类别（如闪光弹）后按贝塞尔轨迹反向规避并自动回正。所有角度参数都是「度」(°)，执行时换算为像素位移。</div>
+
+  <table class="param-table">
+    <thead><tr><th>参数名称</th><th>范围 / 类型</th><th>默认值</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>背闪开关 (FlashDodge_Enable)</td><td>开关</td><td>关闭</td><td>启用闪光弹背闪规避。</td></tr>
+      <tr><td>闪光类别 (FlashDodge_Classes)</td><td>字符串</td><td>空</td><td>触发背闪的类别 ID，逗号分隔，例如 <code>0,2,5</code>。</td></tr>
+      <tr><td>检测置信阈值 (FD_ConfTh)</td><td>0.10 ~ 1.00</td><td>0.50</td><td>闪光检测最低置信度。</td></tr>
+      <tr><td>背闪幅度下/上限 (Yaw)</td><td>0 ~ 360 °</td><td>90 / 120</td><td>水平转向角度区间，每次执行从此区间内随机取值。</td></tr>
+      <tr><td>低头幅度下/上限 (Pitch)</td><td>0 ~ 90 °</td><td>6 / 10</td><td>垂直俯仰角度区间。</td></tr>
+      <tr><td>反应延迟下/上限 (Delay)</td><td>0 ~ 1000 ms</td><td>50 / 150</td><td>检测到闪光后随机等待时间。</td></tr>
+      <tr><td>回正抖动 X / Y (°)</td><td>0 ~ 10 °</td><td>0~2 / 0</td><td>背闪结束回正时叠加的随机抖动半幅，更拟人。</td></tr>
+      <tr><td>启用贝塞尔曲线</td><td>开关</td><td>关闭</td><td>关 = P0→P3 直线分配位移；开 = 按 0~10 平面三次贝塞尔控制点 P0/P1/P2/P3 缩放执行。</td></tr>
+    </tbody>
+  </table>
+
+  <div class="tip-box tip-info">
+    <strong>使用流程</strong>
+    1. 模型类别表中找到「闪光弹」对应类别 ID，填入「闪光类别」<br>
+    2. 调整 Yaw / Pitch 区间到合适幅度<br>
+    3. 启用贝塞尔曲线后可在画板中拖动 P1 / P2 控制点调整轨迹弧度<br>
+    4. 画板中橙色路径为执行轨迹，回正阶段按相同曲线反向播放
+  </div>
+</div>
+
+<!-- ============ 11. 曲线轨迹系统 ============ -->
+<div class="section" id="sec-curve">
+  <div class="section-title"><span class="icon">〰️</span> 十一、跨帧曲线轨迹学习系统（全局）<span class="tag tag-new">V3.7 重构</span></div>
+  <div class="section-desc">V3.7 完全替换旧版双点贝塞尔曲线，改为<strong>跨帧曲线轨迹学习系统</strong>。在画板上拖画理想瞄准路径即可录入，所有按键共用一套曲线。</div>
+
+  <table class="param-table">
+    <thead><tr><th>参数名称</th><th>范围</th><th>默认值</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>曲线开关 (CurveEnable)</td><td>0 / 1</td><td>0 (关闭)</td><td>启用跨帧曲线轨迹调制。</td></tr>
+      <tr><td>曲线强度 (CurveStrength)</td><td>0.1 ~ 20.0</td><td>5.0</td><td>调制幅度。越大轨迹波动越明显。</td></tr>
+    </tbody>
+  </table>
+
+  <div class="tip-box tip-info">
+    <strong>如何使用曲线轨迹学习</strong>
+    1. 进入「曲线轨迹」面板，点击「打开学习画板」（全屏 overlay）<br>
+    2. 在画板上拖画理想的瞄准轨迹（可画多条，预览槽位实时显示）<br>
+    3. 完成后点击「保存学习曲线」，状态栏将提示<em>"曲线轨迹学习完成"</em><br>
+    4. 开启「曲线开关」生效；调整「曲线强度」控制偏离主路径的幅度
+  </div>
+
+  <div class="tip-box tip-warn">
+    <strong>历史移除项</strong>
+    旧版的「贝塞尔双点曲线」「采样点数」「NET 扰动频率」三项已不存在；如自旧版本升级，曲线设置请用新画板重新录入。
+  </div>
+</div>
+
+<!-- ============ 12. 屏蔽参数 ============ -->
+<div class="section" id="sec-shield">
+  <div class="section-title"><span class="icon">🛡️</span> 十二、屏蔽参数</div>
+  <div class="section-desc">屏蔽特定轴向的移动或特定按键的输出。主要用于 NET 协议。</div>
+
+  <div class="subsection">
+    <h3>移动轴屏蔽</h3>
+    <table class="param-table">
+      <thead><tr><th>参数名称</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>屏蔽全局 X</td><td>开关</td><td>关闭</td><td>屏蔽所有 X 轴移动（包括瞄准和手动）。</td></tr>
+        <tr><td>屏蔽全局 Y</td><td>开关</td><td>关闭</td><td>屏蔽所有 Y 轴移动。</td></tr>
+        <tr><td>屏蔽瞄准 X</td><td>开关</td><td>关闭</td><td>仅屏蔽设备端用户物理鼠标的 X 轴移动，WATE 自动瞄准不受影响。</td></tr>
+        <tr><td>屏蔽瞄准 Y</td><td>开关</td><td>关闭</td><td>仅屏蔽设备端用户物理鼠标的 Y 轴移动。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <h3>按键屏蔽（NET 协议）</h3>
+    <table class="param-table">
+      <thead><tr><th>参数名称</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>屏蔽左键</td><td>开关</td><td>关闭</td><td>屏蔽鼠标左键输出。</td></tr>
+        <tr><td>屏蔽右键</td><td>开关</td><td>关闭</td><td>屏蔽鼠标右键输出。</td></tr>
+        <tr><td>屏蔽中键</td><td>开关</td><td>关闭</td><td>屏蔽鼠标中键输出。</td></tr>
+        <tr><td>屏蔽侧键1</td><td>开关</td><td>关闭</td><td>屏蔽鼠标侧键1。</td></tr>
+        <tr><td>屏蔽侧键2</td><td>开关</td><td>关闭</td><td>屏蔽鼠标侧键2。</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ============ 13. 准星找色 ============ -->
+<div class="section" id="sec-crosshair">
+  <div class="section-title"><span class="icon">🎨</span> 十三、准星找色</div>
+  <div class="section-desc">通过颜色检测定位屏幕中央的准星位置，用于更精确的偏差补偿。</div>
+
+  <table class="param-table">
+    <thead><tr><th>参数名称</th><th>范围 / 类型</th><th>默认值</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>准星找色开关</td><td>开关</td><td>关闭</td><td>启用准星颜色检测。</td></tr>
+      <tr><td>HSV 颜色范围</td><td>字符串</td><td>0,90,120-10,255,255|160,90,120-179,255,255</td><td>
+        HSV 色彩空间范围。多组用 <code>|</code> 分隔。默认为红色准星的两个 HSV 区间。
+      </td></tr>
+      <tr><td>扫描半径 (ScanRadius)</td><td>10 ~ 200 px</td><td>50</td><td>屏幕中心搜索范围半径。</td></tr>
+      <tr><td>Y轴增益 (BoostY)</td><td>0.1 ~ 5.0</td><td>1.0</td><td>Y 轴 Kp 微调系数。&gt;1 加快 Y 轴补偿。</td></tr>
+    </tbody>
+  </table>
+
+  <div class="tip-box tip-info">
+    <strong>内置颜色预设</strong>
+    面板提供了常见准星颜色预设（红/绿/蓝/黄），点击即可快速应用。
+  </div>
+</div>
+
+<!-- ============ 14. RCS 压枪 ============ -->
+<div class="section" id="sec-rcs">
+  <div class="section-title"><span class="icon">📉</span> 十四、RCS 压枪系统</div>
+  <div class="section-desc">后坐力补偿系统。为不同枪械配置独立的压枪曲线。</div>
+
+  <table class="param-table">
+    <thead><tr><th>参数名称</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>压枪开关 (RCS_Enable)</td><td>开关</td><td>关闭</td><td>启用 RCS 后坐力补偿。<span class="tag tag-recommend">可用 F4 热键切换</span></td></tr>
+      <tr><td>左键触发 (RCS_OnLeft)</td><td>开关</td><td>开启</td><td>按住左键时执行压枪。</td></tr>
+      <tr><td>瞄准时触发 (RCS_OnAim)</td><td>开关</td><td>关闭</td><td>需同时处于瞄准状态。</td></tr>
+      <tr><td>瞄身体触发 (RCS_OnBody)</td><td>开关</td><td>关闭</td><td>只有瞄准身体部位时才压枪。</td></tr>
+    </tbody>
+  </table>
+
+  <div class="subsection">
+    <h3>多游戏 / 多枪压枪曲线管理 <span class="tag tag-new">V3.7</span></h3>
+    <p style="color:#a098c0;font-size:14px;margin-bottom:12px">RCS 为「游戏 → 枪械 → 阶段 (Stage)」三级树形结构。每把枪可设置多个阶段：</p>
+    <table class="param-table">
+      <thead><tr><th>字段</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>游戏 (RCS_Games)</td><td>独立配置游戏，下拉框切换；每个游戏内独立维护枪械列表。</td></tr>
+        <tr><td>枪械 (Guns)</td><td>每把枪自定义名称与阶段曲线，在游戏面板中下拉切换。</td></tr>
+        <tr><td>Count（子弹数）</td><td>该阶段持续的子弹数量。</td></tr>
+        <tr><td>X（水平补偿）</td><td>正值向右补偿，负值向左。</td></tr>
+        <tr><td>Y（垂直补偿）</td><td>正值向下补偿（抵消上跳）。默认 1.0。</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ============ 15. 类别筛选 ============ -->
+<div class="section" id="sec-class">
+  <div class="section-title"><span class="icon">🏷️</span> 十五、类别筛选与排序</div>
+  <div class="section-desc">控制检测哪些类别的目标、优先级排序、以及部位分离。按键绑定级别可独立设置。</div>
+
+  <table class="param-table">
+    <thead><tr><th>参数名称</th><th>类型</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>类别勾选 (ClassMask)</td><td>复选框</td><td>按模型类别 ID（0~63）勾选要检测的目标类型。</td></tr>
+      <tr><td>类别排序 (Str_ClassSort)</td><td>字符串</td><td>格式：<code>0-1-2-3-4</code>，前面的优先。</td></tr>
+      <tr><td>部位分离 (Str_PartsSep)</td><td>字符串</td><td>格式：<code>0.2,0.3-0.2</code>（头/身体分离高度）。</td></tr>
+      <tr><td>置信分离 (Str_ConfSep)</td><td>字符串</td><td>不同类别使用不同置信阈值。格式：<code>0.5-0.6</code>。</td></tr>
+      <tr><td>转火延迟 (Switch_Delay)</td><td>0 ~ 2000 ms</td><td>切换目标后的延迟，防止在多目标间快速切换。</td></tr>
+      <tr><td>转火类别 (Str_SwitchClass)</td><td>字符串</td><td>限定转火只在特定类别间发生。</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============ 16. 快捷键 ============ -->
+<div class="section" id="sec-hotkey">
+  <div class="section-title"><span class="icon">⌨️</span> 十六、快捷键</div>
+
+  <table class="param-table two-col">
+    <thead><tr><th>按键</th><th>功能</th></tr></thead>
+    <tbody>
+      <tr><td><strong>F7</strong></td><td>安全退出程序</td></tr>
+      <tr><td><strong>F4</strong></td><td>切换 RCS 压枪系统开关</td></tr>
+      <tr><td><strong>Ctrl + 点击滑块</strong></td><td>弹出数字输入框，精确输入参数值</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============ 17. FAQ ============ -->
+<div class="section" id="sec-faq">
+  <div class="section-title"><span class="icon">❓</span> 十七、常见问题与调参建议</div>
+
+  <div class="tip-box tip-success" style="margin-bottom:16px">
+    <strong>Q：瞄准太慢、拉枪跟不上？</strong>
+    A：提高 P-X / P-Y → 降低 Smooth → 适当提高 AimMagnet。
+  </div>
+
+  <div class="tip-box tip-success" style="margin-bottom:16px">
+    <strong>Q：瞄准时准心抖动（左右晃）？</strong>
+    A：提高 D 值 → 提高 Smooth → 降低 P 值。<br>
+    <span class="tag tag-new">V3.7</span> 旧版「B+ 反抖动 / 额外平滑」开关已下线，等效逻辑被并入 PID 输入侧 Smooth 与近距 closeBoost smoothstep 过渡，无需手动启用。
+  </div>
+
+  <div class="tip-box tip-success" style="margin-bottom:16px">
+    <strong>Q：瞄准超调（准心冲过目标再拉回）？</strong>
+    A：降低 P 值 → 提高 D 值 → 降低 I 值。
+  </div>
+
+  <div class="tip-box tip-success" style="margin-bottom:16px">
+    <strong>Q：跟横移敌人滞后？</strong>
+    A：<span class="tag tag-new">V3.7</span> 启用「速度前馈 (FollowGain)」0.3~0.6，等效让 PID 在跟随同时叠加目标速度补偿；切勿超过 1.0。
+  </div>
+
+  <div class="tip-box tip-success" style="margin-bottom:16px">
+    <strong>Q：瞄准有延迟感？</strong>
+    A：确保 AimExtraDelayMs = 0 → AimFpsLimit 设为 0（全速）→ 截图模式选 DXGI → 异步模式开启。<span class="tag tag-new">V3.7</span> 默认值即最优。
+  </div>
+
+  <div class="tip-box tip-success" style="margin-bottom:16px">
+    <strong>Q：采集卡模式帧率只有 60fps？</strong>
+    A：编码格式选 <strong>MJPEG</strong>（V3.7 默认），并把「采集帧率」设为采集卡支持的最大值（如 144/240）。状态栏 <code>CCap</code> 显示实际采集帧率。
+  </div>
+
+  <div class="tip-box tip-success" style="margin-bottom:16px">
+    <strong>Q：旧版 5/6/7 网络模式（加密 UDP / 普通 UDP / TCP）去哪了？</strong>
+    A：<span class="tag tag-new">V3.7 已合并下线</span> 三种模式统一替换为新模式 5「WATESender」：QUIC（msquic）+ WATE/1 二进制帧（JPEG / H.264）。首次接入会自动从 WATESender 的 <code>/api/ca.pem</code> 拉取证书并写入用户 Root，后续连接自动信任。
+  </div>
+
+  <div class="tip-box tip-success" style="margin-bottom:16px">
+    <strong>Q：旧版的「预判移动」没了？</strong>
+    A：<span class="tag tag-new">V3.7 整体下线</span>。其能力由 <strong>PID + 速度前馈 (FollowGain)</strong> 与<strong>跨帧曲线轨迹学习</strong>共同接管，配置更直观且不会过度补偿。
+  </div>
+
+  <div class="tip-box tip-success" style="margin-bottom:16px">
+    <strong>Q：开启 WATE 后游戏掉帧/卡顿？</strong>
+    A：V3.7 默认配置已做全面性能平衡（OpenCV/ONNX 线程限制、GPU Keepalive 条件脉冲、TRT 1 帧延迟流水线）。如仍掉帧：<br>
+    1. AimFpsLimit 设为 0=全速但留出 GPU 空隙；如显卡低端可手设 150~300<br>
+    2. 截图选 DXGI；HDR 显示器自动 sRGB 校正无需手动<br>
+    3. 关闭「推理窗口 (ShowInferenceWindow)」减少额外 GPU 占用
+  </div>
+
+  <div class="tip-box tip-success" style="margin-bottom:16px">
+    <strong>Q：MAKCU / B+ 串口连接不上？</strong>
+    A：用「扫描设备」找正确 COM 口 → 默认波特率 115200（CH343 设备最高 4 Mbps，按设备规格升档）→ 重新点击「连接设备」。
+  </div>
+
+  <div class="tip-box tip-success" style="margin-bottom:16px">
+    <strong>Q：扳机不自动射击？</strong>
+    A：确保「扳机开关」已开启 → 需按住瞄准键时扳机才生效 → 检查触发范围是否合理。<span class="tag tag-new">V3.7</span> 若想<strong>纯扳机不带吸附</strong>，关闭「磁性扳机」即可。
+  </div>
+
+  <div class="tip-box tip-info">
+    <strong>新手推荐配置</strong>
+    初次使用建议保持所有参数默认值。默认 PID 已经过大量调试。<br>
+    先熟悉基本操作：选模型 → 连设备 → 启动运行 → 按住右键瞄准。<br>
+    待熟悉后再微调 <strong>P / Smooth / AimMagnet / FollowGain</strong> 四个核心参数。
+  </div>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<div class="footer">
+  WATE-AI V3.7 参数教学手册
+</div>
+
+</div>
+</body>
+</html>
